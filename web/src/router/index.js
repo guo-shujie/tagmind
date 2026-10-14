@@ -24,7 +24,7 @@ const routes = [
         meta: { requiresAuth: true },
       },
       {
-        path: 'content/edit',
+        path: 'content/edit/:id?',
         name: 'ContentEdit',
         component: () => import('../views/ContentEdit.vue'),
         meta: { requiresAuth: true },
