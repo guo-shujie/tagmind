@@ -20,6 +20,18 @@
                         </el-icon>
                         <span>工作台</span>
                     </el-menu-item>
+                    <el-menu-item index="/contents">
+                       <el-icon>
+                            <Document />
+                        </el-icon>
+                        <span>内容管理</span>
+                    </el-menu-item>
+                    <el-menu-item index="/tags">
+                        <el-icon>
+                            <CollectionTag />
+                        </el-icon>
+                        <span>标签管理</span>
+                    </el-menu-item>
                 </el-menu>
             </el-aside>
             <el-main>
