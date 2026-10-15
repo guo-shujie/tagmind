@@ -18,7 +18,19 @@
                     </div>
                 </div>
             </template>
-
+            <el-card v-if="taskStatus && taskStatus.status !== 'completed'" style="margin-bottom: 20px">
+                <div style="display: flex; align-items: center; gap: 15px">
+                    <el-progress :percentage="taskStatus.progress"
+                        :status="taskStatus.status === 'failed' ? 'exception' : ''" style="flex: 1" />
+                    <el-tag size="small">{{ taskStatusText(taskStatus.status) }}</el-tag>
+                    <el-button v-if="taskStatus.status === 'failed'" size="small" type="primary" @click="handleRetry">
+                        重试
+                    </el-button>
+                </div>
+                <p v-if="taskStatus.error_message" style="color: #f56c6c; font-size: 12px; margin-top: 8px">
+                    错误：{{ taskStatus.error_message }}
+                </p>
+            </el-card>
             <!-- AI 摘要区（有摘要才展示，第三周 AI 分析后会有值） -->
             <el-alert v-if="detail.summary" title="AI 摘要" :description="detail.summary" type="info" :closable="false"
                 style="margin-bottom: 20px" />
@@ -58,10 +70,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import { contentApi } from '../api/content';
+import { taskApi } from '../api/task';
 
 const route = useRoute();
 const router = useRouter();
@@ -101,12 +114,48 @@ async function handleDelete() {
     }
 }
 
+const taskStatus = ref(null);
+let pollTimer = null;
+
+// 轮询任务状态（2 秒一次，第四周换成 SSE）
+async function pollTaskStatus() {
+  const data = await taskApi.getStatus(route.params.id);
+  taskStatus.value = data;
+
+  // 如果还没完成，继续轮询
+  if (data && data.status !== 'completed' && data.status !== 'failed') {
+    pollTimer = setTimeout(pollTaskStatus, 2000);
+  } else if (data && data.status === 'completed') {
+    // 分析完成，重新加载详情
+    detail.value = await contentApi.detail(route.params.id);
+  }
+}
+
+function taskStatusText(status) {
+  const map = { pending: '等待中', processing: '分析中', completed: '已完成', failed: '失败' };
+  return map[status] || status;
+}
+
+async function handleRetry() {
+  await taskApi.retry(route.params.id);
+  taskStatus.value = null;
+  pollTaskStatus();
+}
+
 onMounted(async () => {
-    try {
-        detail.value = await contentApi.detail(route.params.id);
-    } finally {
-        loading.value = false;
+  try {
+    detail.value = await contentApi.detail(route.params.id);
+    // 如果内容状态是 analyzing，开始轮询任务状态
+    if (detail.value.status === 'analyzing') {
+      pollTaskStatus();
     }
+  } finally {
+    loading.value = false;
+  }
+});
+
+onUnmounted(() => {
+  if (pollTimer) clearTimeout(pollTimer);
 });
 </script>
 
