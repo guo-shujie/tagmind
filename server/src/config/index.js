@@ -13,6 +13,15 @@ module.exports = {
     secret: process.env.JWT_SECRET || 'default_secret',
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
   },
+  redis: {
+    host: process.env.REDIS_HOST || 'localhost',
+    port: process.env.REDIS_PORT || 6379,
+  },
+  ai: {
+    apiBase: process.env.AI_API_BASE || 'https://api.deepseek.com/v1',
+    apiKey: process.env.AI_API_KEY || '',
+    model: process.env.AI_MODEL || 'deepseek-chat',
+  },
 };
 
 /**

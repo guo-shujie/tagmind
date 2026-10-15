@@ -55,9 +55,13 @@ exports.create = async (req, res) => {
 
             await conn.commit();
 
+            // ========== 新增：创建 AI 分析任务 ==========
+            await createAiTask(contentId);
+
+
             res.json({
                 code: 0,
-                message: '创建成功',
+                message: '创建成功，AI 分析已开始',
                 data: { id: contentId, title },
             });
         } catch (err) {
@@ -71,6 +75,21 @@ exports.create = async (req, res) => {
         res.status(500).json({ code: 500, message: '服务器错误' });
     }
 };
+
+// 辅助函数：创建 AI 任务记录 + 入队
+async function createAiTask(contentId) {
+    const { addAiAnalysisJob } = require('../queues/aiAnalysisQueue');
+
+    // 1. 在 ai_tasks 表插入任务记录
+    const [result] = await pool.query(
+        `INSERT INTO ai_tasks (task_id, content_id, type, status, progress) 
+    VALUES (?, ?, 'full_analysis', 'pending', 0)`,
+        [`job-${Date.now()}`, contentId]
+    );
+
+    // 2. 把任务加到 BullMQ 队列
+    await addAiAnalysisJob(contentId);
+}
 
 // 获取内容列表（带标签筛选 + 全文搜索 + 分页）⭐ 核心查询
 exports.list = async (req, res) => {
