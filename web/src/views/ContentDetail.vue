@@ -169,3 +169,22 @@
   onUnmounted(() => {
     if (evtSource) evtSource.close();
   });
+</script>
+
+<style scoped>
+.detail-header { display: flex; justify-content: space-between; align-items: center; }
+.detail-title { margin: 0; font-size: 22px; }
+.meta-info { color: #999; font-size: 13px; display: flex; align-items: center; }
+.content-body { line-height: 1.8; font-size: 15px; color: #333; }
+.content-body p { margin: 0 0 12px; }
+.tags-section { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; }
+.no-tag { color: #999; font-size: 13px; }
+.related-section { margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; }
+.related-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; cursor: pointer; border-bottom: 1px dashed #f0f0f0; }
+.related-item:hover .related-title { color: #409eff; }
+.related-title { font-size: 14px; }
+.actions { margin-top: 30px; text-align: right; }
+.progress-card { margin-bottom: 20px; }
+.progress-row { display: flex; align-items: center; gap: 15px; }
+.progress-hint { color: #999; font-size: 12px; margin: 10px 0 0; }
+</style> 
