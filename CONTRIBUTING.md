@@ -31,7 +31,7 @@ git checkout -b feature/你的功能名
 
 ```bash
 # 启动数据库和 Redis
-docker-compose up -d mysql redis
+docker compose up -d mysql redis
 
 # 启动后端 API
 cd server
@@ -110,7 +110,7 @@ git push origin feature/你的功能名
 
 ### Q: 本地开发连不上数据库？
 
-A: 先确认 MySQL 容器在运行：`docker-compose ps`，看 mysql 状态是不是 running。
+A: 先确认 MySQL 容器在运行：`docker compose ps`，看 mysql 状态是不是 running。
 
 ### Q: AI 分析任务一直等待中？
 

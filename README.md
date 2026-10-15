@@ -46,7 +46,7 @@ cp .env.example .env
 # 推荐用智谱 GLM-4-Flash（永久免费）：https://open.bigmodel.cn
 
 # 4. 一键启动所有服务
-docker-compose up -d --build
+docker compose up -d --build
 
 # 5. 访问应用
 # 前端: http://localhost
@@ -59,16 +59,16 @@ docker-compose up -d --build
 
 ```bash
 # 查看所有服务状态
-docker-compose ps
+docker compose ps
 
 # 查看 API 日志
-docker-compose logs -f api
+docker compose logs -f api
 
 # 查看 Worker 日志
-docker-compose logs -f worker
+docker compose logs -f worker
 
 # 查看 MySQL 日志
-docker-compose logs -f mysql
+docker compose logs -f mysql
 ```
 
 ## 📁 项目结构
@@ -86,6 +86,7 @@ tagmind/
 │   │   ├── models/         # 数据模型
 │   │   └── config/         # 配置
 │   ├── worker.js           # Worker 进程入口
+│   ├── Dockerfile          # 后端镜像构建
 │   └── package.json
 ├── web/                 # 前端 Vue 3
 │   ├── src/
@@ -94,11 +95,14 @@ tagmind/
 │   │   ├── api/            # API 封装
 │   │   ├── stores/        # Pinia 状态管理
 │   │   └── router/         # 路由
+│   ├── Dockerfile          # 前端构建镜像
 │   └── package.json
 ├── init.sql             # 数据库初始化脚本（自动执行）
 ├── docker-compose.yml    # Docker 编排配置
 ├── nginx.conf           # Nginx 反向代理配置
 ├── .env.example         # 环境变量模板
+├── LICENSE              # 开源协议
+├── CONTRIBUTING.md      # 贡献指南
 └── README.md
 ```
 

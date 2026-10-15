@@ -62,7 +62,7 @@ services:
     build: ./server
     container_name: tagmind-worker
     restart: unless-stopped
-    command: node worker.js    # 覆盖默认命令，启动 Worker
+    command: node worker.js
     environment:
       - DB_HOST=mysql
       - DB_PORT=3306
