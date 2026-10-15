@@ -41,6 +41,12 @@ const routes = [
         component: () => import('../views/TagManage.vue'),
         meta: { requiresAuth: true },
       },
+      {
+        path: 'graph',
+        name: 'KnowledgeGraph',
+        component: () => import('../views/KnowledgeGraph.vue'),
+        meta: { requiresAuth: true },
+      },
     ],
   },
 ]

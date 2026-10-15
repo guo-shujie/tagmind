@@ -32,6 +32,12 @@
                         </el-icon>
                         <span>标签管理</span>
                     </el-menu-item>
+                   <el-menu-item index="/graph">
+                        <el-icon>
+                            <Share />
+                        </el-icon>
+                        <span>知识图谱</span>
+                    </el-menu-item>
                 </el-menu>
             </el-aside>
             <el-main>

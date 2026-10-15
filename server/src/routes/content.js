@@ -11,5 +11,6 @@ router.get('/', contentController.list);
 router.get('/:id', contentController.detail);
 router.put('/:id', contentController.update);
 router.delete('/:id', contentController.remove);
+router.get('/:id/related', contentController.related);
 
 module.exports = router;

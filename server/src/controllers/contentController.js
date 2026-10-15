@@ -300,3 +300,45 @@ exports.remove = async (req, res) => {
         res.status(500).json({ code: 500, message: '服务器错误' });
     }
 };
+
+// 获取相似内容推荐 ⭐ 核心 SQL
+exports.related = async (req, res) => {
+    try {
+      const userId = req.user.id;
+      const contentId = req.params.id;
+  
+      // 先确认内容属于当前用户
+      const [contents] = await pool.query(
+        'SELECT id FROM contents WHERE id = ? AND user_id = ?',
+        [contentId, userId]
+      );
+      if (contents.length === 0) {
+        return res.status(404).json({ code: 404, message: '内容不存在' });
+      }
+  
+      // SQL：找和当前内容共享标签最多的 5 条内容
+      // 思路：
+      // 1. 先查出当前内容有哪些标签
+      // 2. 找其他内容也带有这些标签的
+      // 3. 按共享标签数量排序，取前 5 条
+      const [related] = await pool.query(
+        `SELECT c.id, c.title, c.summary, c.view_count, COUNT(ct.tag_id) AS shared_tags
+         FROM contents c
+         JOIN contents_tags ct ON c.id = ct.content_id
+         WHERE ct.tag_id IN (
+           SELECT tag_id FROM contents_tags WHERE content_id = ?
+         )
+         AND c.id != ?
+         AND c.user_id = ?
+         GROUP BY c.id
+         ORDER BY shared_tags DESC, c.view_count DESC
+         LIMIT 5`,
+        [contentId, contentId, userId]
+      );
+  
+      res.json({ code: 0, data: related });
+    } catch (err) {
+      console.error('获取相似内容错误:', err);
+      res.status(500).json({ code: 500, message: '服务器错误' });
+    }
+  };
