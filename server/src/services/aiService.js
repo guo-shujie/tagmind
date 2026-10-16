@@ -27,7 +27,7 @@ async function callAI(systemPrompt, userPrompt) {
       timeout: 30000,
     }
   );
-
+  console.log('AI response:', response.data.choices[0].message.content);
   return response.data.choices[0].message.content;
 }
 
@@ -61,7 +61,8 @@ async function analyzeSentiment(title, content) {
   const systemPrompt = '你是一个情感分析专家。请判断内容的情感倾向，只输出以下三个词之一：positive, neutral, negative';
   const userPrompt = `标题：${title}\n内容：${content.substring(0, 2000)}\n\n情感倾向：`;
 
-  const result = await callAI(systemPrompt, userPrompt).trim().toLowerCase();
+  const rawResult = await callAI(systemPrompt, userPrompt) || '';
+  const result = rawResult.trim().toLowerCase();
 
   // 校验返回值是否合法
   if (['positive', 'neutral', 'negative'].includes(result)) {
